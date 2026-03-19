@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Для тата 🎉</title>
+
+<style>
+body {
+    margin: 0;
+    overflow: hidden;
+    background: linear-gradient(#87CEEB, #ffffff);
+    font-family: Arial;
+}
+
+#player {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 50px;
+}
+
+.gift {
+    position: absolute;
+    font-size: 40px;
+}
+
+#score {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+}
+
+#end {
+    display: none;
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+    font-size: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="score">Очки: 0</div>
+<div id="player">🧔</div>
+<div id="end"></div>
+
+<script>
+let player = document.getElementById("player");
+let score = 0;
+
+document.addEventListener("mousemove", e => {
+    player.style.left = e.clientX - 40 + "px";
+});
+
+document.addEventListener("touchmove", e => {
+    player.style.left = e.touches[0].clientX - 40 + "px";
+});
+
+function createGift() {
+    let gift = document.createElement("div");
+    gift.className = "gift";
+    gift.innerHTML = "🎁";
+    gift.style.left = Math.random() * window.innerWidth + "px";
+    gift.style.top = "0px";
+    document.body.appendChild(gift);
+
+    let fall = setInterval(() => {
+        let top = parseInt(gift.style.top);
+        gift.style.top = top + 5 + "px";
+
+        let playerRect = player.getBoundingClientRect();
+        let giftRect = gift.getBoundingClientRect();
+
+        if (
+            giftRect.bottom > playerRect.top &&
+            giftRect.left < playerRect.right &&
+            giftRect.right > playerRect.left
+        ) {
+            score++;
+            document.getElementById("score").innerText = "Пункти:" + score;
+            gift.remove();
+            clearInterval(fall);
+
+            if (score >= 10) endGame();
+        }
+
+        if (top > window.innerHeight) {
+            gift.remove();
+            clearInterval(fall);
+        }
+    }, 20);
+}
+
+function endGame() {
+    document.getElementById("end").style.display = "block";
+    document.getElementById("end").innerHTML =
+        "🎉 З Днем Народження, тату! 🎉<br>Ти найкращий ❤️";
+}
+
+setInterval(createGift, 1000);
+</script>
+</body>
+</html>
