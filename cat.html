@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secret Quest 🎁</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Segoe UI, sans-serif;
+    background: radial-gradient(circle at top, #0f0f1a, #050510);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.box{
+    width:90%;
+    max-width:420px;
+    padding:20px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    box-shadow:0 0 50px rgba(255,0,100,0.15);
+    text-align:center;
+}
+
+input{
+    width:80%;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+button{
+    margin-top:15px;
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(45deg,#ff4d6d,#ff9a9e);
+    color:white;
+    font-weight:bold;
+}
+
+.small{opacity:0.6;font-size:12px;}
+
+.balloon{
+    font-size:40px;
+    position:absolute;
+    cursor:pointer;
+    user-select:none;
+}
+
+#field{
+    position:relative;
+    height:300px;
+    overflow:hidden;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box" id="game">
+
+<h2>🔐 Рівень 1</h2>
+<p>
+Я не маю форми, але формую тебе.<br>
+Я змінююсь, але залишаюсь з тобою.<br>
+Що це?
+</p>
+
+<input id="a1">
+<br>
+<button onclick="lvl1()">OK</button>
+<p id="msg"></p>
+
+</div>
+
+<audio id="music" src="music.mp3"></audio>
+
+<script>
+
+// 🔐 РІВЕНЬ 1
+function lvl1(){
+    let a=document.getElementById("a1").value.toLowerCase();
+
+    if(a.includes("характер") || a.includes("особистість")){
+        lvl2();
+    }else{
+        document.getElementById("msg").innerHTML="❌ Глибше думай...";
+    }
+}
+
+// 🔢 РІВЕНЬ 2 (ШИФР)
+function lvl2(){
+document.getElementById("game").innerHTML=`
+<h2>🔢 Рівень 2</h2>
+<p>1 = A, 2 = B, 3 = C ...</p>
+<p><b>19 5 19 20 18 1</b></p>
+
+<input id="code">
+<br>
+<button onclick="checkCode()">OK</button>
+<p id="msg"></p>
+`;
+}
+
+function checkCode(){
+let c=document.getElementById("code").value.toLowerCase();
+
+if(c==="sister" || c==="сестра"){
+lvl3();
+}else{
+document.getElementById("msg").innerHTML="😏 Невірно...";
+}
+}
+
+// 🎈 РІВЕНЬ 3 (ЛІТАЮЧІ КУЛЬКИ)
+let balls=[];
+
+function lvl3(){
+document.getElementById("game").innerHTML=`
+<h2>🎈 Рівень 3</h2>
+<p>Злови правильну кульку</p>
+<div id="field"></div>
+<p id="msg"></p>
+`;
+
+spawn();
+move();
+}
+
+function spawn(){
+let field=document.getElementById("field");
+
+for(let i=0;i<6;i++){
+let b=document.createElement("div");
+b.innerHTML="🎈";
+b.className="balloon";
+
+b.style.left=Math.random()*80+"%";
+b.style.top=Math.random()*70+"%";
+
+let correct=(i===3);
+
+b.onclick=function(){
+if(correct){
+lvl4();
+}else{
+document.getElementById("msg").innerHTML="😈 Не ця!";
+}
+};
+
+field.appendChild(b);
+
+balls.push({
+el:b,
+x:(Math.random()*2+1),
+y:(Math.random()*2+1)
+});
+}
+}
+
+function move(){
+balls.forEach(b=>{
+let x=b.el.offsetLeft+b.x;
+let y=b.el.offsetTop+b.y;
+
+if(x>280||x<0)b.x*=-1;
+if(y>250||y<0)b.y*=-1;
+
+b.el.style.left=x+"px";
+b.el.style.top=y+"px";
+});
+
+requestAnimationFrame(move);
+}
+
+// 🪤 РІВЕНЬ 4
+function lvl4(){
+document.getElementById("game").innerHTML=`
+<h2>🪤 Рівень 4</h2>
+<p><b>НЕ натискай першу кнопку</b></p>
+
+<button onclick="fail()">Натисни</button>
+<br><br>
+<button onclick="lvl5()">...</button>
+
+<p id="msg"></p>
+`;
+}
+
+function fail(){
+document.getElementById("msg").innerHTML="😈 Ти попалась...";
+}
+
+// 🎂 ФІНАЛ
+function lvl5(){
+document.getElementById("game").innerHTML=`
+<h2>🎉 ТИ ПРОЙШЛА 🎉</h2>
+<p>
+Це не просто гра...<br><br>
+Це привітання 💖<br><br>
+З Днем народження ✨
+</p>
+`;
+
+document.getElementById("music").play();
+}
+
+</script>
+
+</body>
+</html>
